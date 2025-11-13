@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Parking Station</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1> Smart Parking India</h1>
+      <p>Find and reserve parking spots instantly across India</p>
+      <div class="live-status">
+        <span class="live-dot"></span>
+Live IoT • Last update: <span id="last-updated">--</span> • Battery: <span id="avg-battery">--</span>% • Faulty: <span id="faulty-count">0</span>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="parking">Available Parking</button>
+      <button class="tab" data-tab="reservations">My Reservations</button>
+      <button class="tab" data-tab="history">History</button>
+    </nav>
+
+    <!-- Parking Lots Tab -->
+    <section id="parking-tab" class="tab-content active">
+      <div class="section-header">
+        <h2>Available Parking Lots</h2>
+        <button class="btn btn-secondary" onclick="loadParkingLots()">🔄 Refresh</button>
+      </div>
+      <div id="parking-lots" class="grid"></div>
+
+      <div class="section-header" style="margin-top:20px;">
+        <h2>IoT Event Feed</h2>
+        <span id="feed-status" class="feed-status">Connecting...</span>
+      </div>
+      <div id="iot-feed" class="iot-feed"></div>
+
+      <!-- Reserve Modal -->
+      <div id="reserve-modal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeReserveModal()">&times;</span>
+          <h2>Reserve Parking Spot</h2>
+          <form id="reserve-form">
+            <input type="hidden" id="lot-id">
+            <input type="hidden" id="price-per-hour">
+            <div class="form-group">
+              <label>Parking Lot:</label>
+              <input type="text" id="lot-name" disabled>
+            </div>
+            <div class="form-group">
+              <label for="vehicle-number">Vehicle Number:</label>
+              <input type="text" id="vehicle-number" placeholder="e.g., ABC-1234" required>
+            </div>
+            <div class="form-group">
+              <label for="reserve-hours">Duration (hours):</label>
+              <input type="number" id="reserve-hours" min="1" step="1" value="1" required>
+            </div>
+            <div class="form-group">
+              <label for="payment-method">Payment Method:</label>
+              <select id="payment-method">
+                <option value="upi">UPI</option>
+                <option value="card">Card</option>
+                <option value="cash">Cash</option>
+              </select>
+            </div>
+            <div id="upi-qr-section" class="upi-qr hidden">
+              <div class="qr-header">Scan to pay (UPI)</div>
+              <img id="upi-qr" alt="UPI QR" />
+              <div id="upi-status" class="upi-status">Generate QR on submit…</div>
+            </div>
+            <div class="form-group">
+              <label>Total (advance):</label>
+              <input type="text" id="total-amount" disabled>
+            </div>
+            <button type="submit" class="btn btn-primary">Pay & Reserve</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Live Spots Modal -->
+      <div id="spots-modal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeSpotsModal()">&times;</span>
+          <h2 id="spots-modal-title">Live Spots</h2>
+          <div class="legend">
+            <span class="legend-item"><span class="dot vacant"></span> Vacant</span>
+            <span class="legend-item"><span class="dot occupied"></span> Occupied</span>
+            <span class="legend-item"><span class="dot sensor-bad"></span> Sensor issue</span>
+          </div>
+          <div id="spots-grid" class="spots-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Active Reservations Tab -->
+    <section id="reservations-tab" class="tab-content">
+      <div class="section-header">
+        <h2>Active Reservations</h2>
+        <button class="btn btn-secondary" onclick="loadReservations()">🔄 Refresh</button>
+      </div>
+      <div id="active-reservations" class="reservations-list"></div>
+    </section>
+
+    <!-- History Tab -->
+    <section id="history-tab" class="tab-content">
+      <div class="section-header">
+        <h2>Reservation History</h2>
+        <button class="btn btn-secondary" onclick="loadHistory()">🔄 Refresh</button>
+      </div>
+      <div id="history-list" class="reservations-list"></div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
